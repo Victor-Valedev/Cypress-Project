@@ -1,0 +1,17 @@
+{
+  "name": "primeiro-projeto",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "cypress:mobile": "npx cypress run --config viewportWidth=411,viewportHeight=823",
+    "cypress:run:headless": "npx cypress run",
+    "cypress:open:web": "npx cypress open"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "cypress": "^13.17.0"
+  }
+}
