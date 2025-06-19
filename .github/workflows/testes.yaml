@@ -5,7 +5,7 @@ on:
     branches: 
       - main
   schedule:
-    - cron: '10 19 * * *' # all days at 16:10 Brasil
+    - cron: '16 19 * * *' # all days at 16:10 Brasil
 
 jobs:
   cypress-tests:
