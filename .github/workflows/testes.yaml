@@ -1,0 +1,69 @@
+name: Tests Notify Discord
+
+on: 
+  pull_request:
+    branches: 
+      - main
+  schedule:
+    - cron: '10 19 * * *' # all days at 16:10 Brasil
+
+jobs:
+  cypress-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v4
+
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+    
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run Cypress tests
+      run: npx cypress run
+
+    - name: Notify Discord on Success
+      if: success()
+      run: |
+         curl -H "Content-Type: application/json" \
+         -X POST \
+         -d '{
+            "embeds": [{
+            "title": "✅ Pipeline de Testes - Sucesso",
+            "description": "Os testes passaram com sucesso.",
+            "color": 65280,
+            "fields": [
+              { "name": "Status", "value": "🟢 Sucesso", "inline": true },
+              { "name": "Branch", "value": "${{ github.ref_name }}", "inline": true },
+              { "name": "Autor", "value": "${{ github.actor }}", "inline": true }
+            ],
+            "footer": { "text": "GitHub Actions | Cypress" },
+            "timestamp": "'$(date --utc +%Y-%m-%dT%H:%M:%SZ)'"
+            }]
+         }' \
+         ${{ secrets.DISCORD_WEBHOOK }}
+
+    - name: Notify Discord on Failure
+      if: failure()
+      run: |
+        curl -H "Content-Type: application/json" \
+        -X POST \
+        -d '{
+        "embeds": [{
+            "title": "❌ Pipeline de Testes - Falhou",
+            "description": "Atenção! Algum teste falhou na execução.",
+            "color": 16711680,
+            "fields": [
+            { "name": "Status", "value": "🔴 Falhou", "inline": true },
+            { "name": "Branch", "value": "${{ github.ref_name }}", "inline": true },
+            { "name": "Autor", "value": "${{ github.actor }}", "inline": true }
+            ],
+            "footer": { "text": "GitHub Actions | Cypress" },
+            "timestamp": "'$(date --utc +%Y-%m-%dT%H:%M:%SZ)'"
+        }]
+        }' \
+        ${{ secrets.DISCORD_WEBHOOK }}
