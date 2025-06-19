@@ -42,8 +42,8 @@ context('Dev finance agilizei', () => {
 
     //Cadastrar saídas.
     it('Cadastrar saídas', () => {
-        
-        cy.get('#transaction .button').click(); //id + class
+        //forçando error
+        cy.get('').click(); //id + class
         cy.get('#description').type('Chocolate'); //id
         cy.get('[name="amount"]').type(-10); //atributos
         cy.get('[type=date]').type('2024-12-24'); //atributos
