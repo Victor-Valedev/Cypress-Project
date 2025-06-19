@@ -6,7 +6,7 @@ on:
       - main
   workflow_dispatch:
   schedule:
-    - cron: '20 19 * * *' # all days at 16:10 Brasil
+    - cron: '00 21 * * *' # all days at 18:00 
 
 jobs:
   cypress-tests:
