@@ -4,9 +4,8 @@ on:
   pull_request:
     branches: 
       - main
-  workflow_dispatch:
   schedule:
-    - cron: '15 21 * * *' # all days at 18:00 
+    - cron: '25 21 * * *' # all days at 18:00 
 
 jobs:
   cypress-tests:
