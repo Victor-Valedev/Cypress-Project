@@ -4,8 +4,9 @@ on:
   pull_request:
     branches: 
       - main
+  workflow_dispatch:
   schedule:
-    - cron: '16 19 * * *' # all days at 16:10 Brasil
+    - cron: '20 19 * * *' # all days at 16:10 Brasil
 
 jobs:
   cypress-tests:
