@@ -6,9 +6,11 @@ on:
       - main
   schedule:
     - cron: '25 21 * * *' # all days at 18:00 
+  workflow_dispatch:
 
 jobs:
   cypress-tests:
+    name: Executar Cypress e publicar relatório
     runs-on: ubuntu-latest
     
     steps:
@@ -25,6 +27,21 @@ jobs:
 
     - name: Run Cypress tests
       run: npx cypress run
+    
+    - name: Generated HTML
+      run: |
+        npx mochawesome-merge mochawesome-report/*.json > mochawesome.json
+        npx mochawesome-report-generator mochawesome.json -o mochawesome-html
+    
+    - name: Rename report to index.html
+      run: mv mochawesome-html/mochawesome.html mochawesome-html/index.html
+
+    - name: Deploy GitHub Pages
+      if: always()
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: mochawesome-html
 
     - name: Notify Discord on Success
       if: success()
@@ -39,7 +56,8 @@ jobs:
             "fields": [
               { "name": "Status", "value": "🟢 Sucesso", "inline": true },
               { "name": "Branch", "value": "${{ github.ref_name }}", "inline": true },
-              { "name": "Autor", "value": "${{ github.actor }}", "inline": true }
+              { "name": "Autor", "value": "${{ github.actor }}", "inline": true },
+              { "name": "📊 Relatório", "value": "[Clique aqui](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }})", "inline": false }
             ],
             "footer": { "text": "GitHub Actions | Cypress" },
             "timestamp": "'$(date --utc +%Y-%m-%dT%H:%M:%SZ)'"
@@ -60,7 +78,8 @@ jobs:
             "fields": [
             { "name": "Status", "value": "🔴 Falhou", "inline": true },
             { "name": "Branch", "value": "${{ github.ref_name }}", "inline": true },
-            { "name": "Autor", "value": "${{ github.actor }}", "inline": true }
+            { "name": "Autor", "value": "${{ github.actor }}", "inline": true },
+            { "name": "📊 Relatório", "value": "[Clique aqui](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }})", "inline": false }
             ],
             "footer": { "text": "GitHub Actions | Cypress" },
             "timestamp": "'$(date --utc +%Y-%m-%dT%H:%M:%SZ)'"
