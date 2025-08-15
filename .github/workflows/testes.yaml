@@ -10,14 +10,14 @@ on:
 
 jobs:
   cypress-tests:
-    name: Executar Cypress e publicar relatório
+    name: Run Cypress and Publish Report
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout Repo
+    - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Setup Node
+    - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '18'
@@ -28,7 +28,7 @@ jobs:
     - name: Run Cypress tests
       run: npx cypress run
     
-    - name: Generated HTML
+    - name: Generate HTML Report
       run: |
         npx mochawesome-merge mochawesome-report/*.json > mochawesome.json
         npx mochawesome-report-generator mochawesome.json -o mochawesome-html
@@ -50,14 +50,14 @@ jobs:
          -X POST \
          -d '{
             "embeds": [{
-            "title": "✅ Pipeline de Testes - Sucesso",
-            "description": "Os testes passaram com sucesso.",
+            "title": "✅ Test Pipeline - Passed",
+            "description": "All automated tests completed successfully.",
             "color": 65280,
             "fields": [
-              { "name": "Status", "value": "🟢 Sucesso", "inline": true },
+              { "name": "Status", "value": "🟢 Passed", "inline": true },
               { "name": "Branch", "value": "${{ github.ref_name }}", "inline": true },
-              { "name": "Autor", "value": "${{ github.actor }}", "inline": true },
-              { "name": "📊 Relatório", "value": "[Clique aqui](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }})", "inline": false }
+              { "name": "Triggered by", "value": "${{ github.actor }}", "inline": true },
+              { "name": "📊 Report", "value": "[View Report](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }})", "inline": false }
             ],
             "footer": { "text": "GitHub Actions | Cypress" },
             "timestamp": "'$(date --utc +%Y-%m-%dT%H:%M:%SZ)'"
@@ -72,14 +72,14 @@ jobs:
         -X POST \
         -d '{
         "embeds": [{
-            "title": "❌ Pipeline de Testes - Falhou",
-            "description": "Atenção! Algum teste falhou na execução.",
+            "title": "❌ Test Pipeline - Failed",
+            "description": "One or more automated tests failed during execution.",
             "color": 16711680,
             "fields": [
-            { "name": "Status", "value": "🔴 Falhou", "inline": true },
+            { "name": "Status", "value": "🔴 Failed", "inline": true },
             { "name": "Branch", "value": "${{ github.ref_name }}", "inline": true },
-            { "name": "Autor", "value": "${{ github.actor }}", "inline": true },
-            { "name": "📊 Relatório", "value": "[Clique aqui](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }})", "inline": false }
+            { "name": "Triggered by", "value": "${{ github.actor }}", "inline": true },
+            { "name": "📊 Report", "value": "[View Report](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }})", "inline": false }
             ],
             "footer": { "text": "GitHub Actions | Cypress" },
             "timestamp": "'$(date --utc +%Y-%m-%dT%H:%M:%SZ)'"
